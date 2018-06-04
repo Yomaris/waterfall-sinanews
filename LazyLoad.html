@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>懒加载</title>
+    <script src="https://cdn.bootcss.com/jquery/2.2.2/jquery.min.js"></script>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: scroll;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+    </div>
+    <script>
+        for (var i = 0; i < 40; i++) {
+            var rand = Math.floor(Math.random() * 100);
+            var AllPicUrl = "http://via.placeholder.com/200x200";
+            var picUrl = "https://picsum.photos/200/200/?image=" + rand;
+            var html = '<img src="' + AllPicUrl + '"alt="..."' + 'data-src="' + picUrl + '">';
+            $('.container').append(html);
+        }
+        start();
+
+        function start() {
+            $('.container img').not('[loaded]').each(function () {
+                var $node = $(this);
+                if (isShow($node)) {
+                    //测试
+                    // setTimeout(function(){
+                    loadImg($node);
+                    // },500);      
+                }
+            });
+        }
+        var clock;
+        $(window).on('scroll', function () {
+            if (clock) {
+                clearTimeout();
+            } else {
+                clock = setTimeout(function () {
+                    start();
+                }, 300);
+            }
+        });
+
+        function isShow($node) {
+            return $('.container img').offset().top < $(window).height() + $(window).scrollTop();
+        }
+
+        function loadImg($img) {
+            $img.attr('src', $img.attr('data-src'));
+            $img.attr('loaded', 1);
+        }
+    </script>
+</body>
+
+</html>
